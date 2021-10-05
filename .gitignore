@@ -1,0 +1,6 @@
+priv
+.RData
+.Rproj.user
+.Rhistory
+*.Rproj
+.~lock*

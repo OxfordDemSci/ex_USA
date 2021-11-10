@@ -4,6 +4,7 @@
 
 set.seed(1987)
 
+library(data.table)
 library(here); library(glue)
 library(tidyverse); library(yaml)
 library(patchwork)
@@ -57,7 +58,6 @@ dat$mx_input_100 <- dat$deaths_input_100[scheme %in% 'masters' & cause %in% 'obe
 # Description of mx -------------------------------------------------------
 
 #calculate mx
-dat$mx_input_100 <- dat$mx_input_100[, CI_s_mx(dt = .SD,n_sim = cnst$n_sim),by = .(reth,year,sex,age)]
 dat$mx_input_100[,nx := 1]
 dat$mx_input_100[age == 100,nx := Inf]
 
@@ -67,6 +67,9 @@ dat$mx_input_100[age == 100,nx := Inf]
 dat$mx_input_100[, reth:= factor(x = reth,labels = c('nhw','nhb','latinx','aian','other'))]
 dat$mx_input_100[, sex:= factor(x = sex,labels = c('female','male'))]
 
+dat$mx_input_100_to_save <- dat$mx_input_100
+
+dat$mx_input_100 <- dat$mx_input_100[, CI_s_mx(dt = .SD,n_sim = cnst$n_sim),by = .(reth,year,sex,age)]
 
 # Diagnostic plots of mx --------------------------------------------------
 
@@ -149,4 +152,4 @@ ggsave(glue('{cnst$path_out}/fig_cod_prop_females.png'),plot = fig$fig_COD_prop_
 
 ggsave(glue('{cnst$path_out}/fig_cod_prop_males.png'),plot = fig$fig_COD_prop_males,width = 10,height = 10)
 
-
+saveRDS(dat$mx_input_100_to_save,glue('{cnst$path_out}/mx_input_100.rds'))

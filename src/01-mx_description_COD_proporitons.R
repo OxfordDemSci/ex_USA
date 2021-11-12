@@ -15,7 +15,6 @@ library(gt); library(openxlsx)
 wd <- here()
 cnst <- list()
 config <- read_yaml(glue('{wd}/cfg/config.yaml'))
-region_meta <- read_csv(glue('{wd}/cfg/region_metadata.csv'), na = '.')
 cnst <- within(cnst, {
   regions_for_analysis = config$regions_for_all_cause_analysis
   path_out = glue('{wd}/out')
@@ -152,4 +151,52 @@ ggsave(glue('{cnst$path_out}/fig_cod_prop_females.png'),plot = fig$fig_COD_prop_
 
 ggsave(glue('{cnst$path_out}/fig_cod_prop_males.png'),plot = fig$fig_COD_prop_males,width = 10,height = 10)
 
+
+
+#### visualize the rest
+
+fig$fig_COD_prop_females <- 
+  ggplot(data = dat$deaths_input_100[sex == 'female' & year == 2019],
+         aes(
+           x = age,
+           y = deaths_cause_prop,
+           fill = cause)) +
+  ggtitle('COD structure over time, scheme and subgroup, females')+
+  geom_area(stat = 'identity', position = 'fill')+
+  labs(
+    x = 'Age',
+    y = 'Proportion'
+  ) +
+  facet_grid(reth~scheme)+
+  scale_fill_manual(values = rev(c(1,rep(2,10))))
+
+
+fig$fig_COD_prop_males <- 
+  ggplot(data = dat$deaths_input_100[sex == 'male' & year == 2019],
+         aes(
+           x = age,
+           y = deaths_cause_prop,
+           fill = cause)) +
+  ggtitle('COD structure over time, scheme and subgroup, males')+
+  geom_area(stat = 'identity', position = 'fill')+
+  labs(
+    x = 'Age',
+    y = 'Proportion'
+  ) +
+  facet_grid(reth~scheme)+
+  scale_fill_manual(values = rev(c(1,rep(3,10))))
+
+
+
+ggsave(glue('{cnst$path_out}/fig_cod_prop_females_rest.png'),plot = fig$fig_COD_prop_females,width = 10,height = 10)
+
+
+ggsave(glue('{cnst$path_out}/fig_cod_prop_males_rest.png'),plot = fig$fig_COD_prop_males,width = 10,height = 10)
+
+
+
+#### save 
+
 saveRDS(dat$mx_input_100_to_save,glue('{cnst$path_out}/mx_input_100.rds'))
+
+saveRDS(dat$deaths_input_100,glue('{cnst$path_out}/cod_input_100.rds'))

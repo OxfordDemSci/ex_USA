@@ -19,6 +19,7 @@ cnst <- within(cnst, {
   path_tmp = glue('{wd}/tmp')
   # number of Poisson life-table replicates
   n_sim = 500
+  years_ind = 2010:2020
 })
 
 dat <- list()
@@ -91,12 +92,12 @@ dat$lt_100_sim <-
 # Assemble table with ex statistics -------------------------------
 
 # central estimates of life-expectancy, annual life-expectancy difference,
-# and average annual life-expectancy difference 2015 to 2019
+# and average annual life-expectancy difference 2015 to 2020
 
 # 95% uncertainty intervals around the central estimates
 dat$lt_ex_ci <-
   dat$lt_100_sim %>%
-  filter(year %in% c(2010:2019)) %>%
+  filter(year %in% cnst$years_ind) %>%
   select(id_sim, reth, sex, year, x, mx, ex, edx) %>%
   arrange(id_sim, reth, sex, x, year) %>%
   group_by(reth, sex, x, year) %>%

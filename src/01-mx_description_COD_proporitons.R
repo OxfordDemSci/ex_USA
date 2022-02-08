@@ -1,7 +1,6 @@
 # General life-table analysis
 
 # Init ------------------------------------------------------------
-
 set.seed(1987)
 
 library(data.table)
@@ -21,6 +20,15 @@ cnst <- within(cnst, {
   path_tmp = glue('{wd}/tmp')
   # number of Poisson life-table replicates
   n_sim = 500
+  #years to show in graps
+  years_fig = c(2010,2015,2020)
+  cols_fig = c('#FF9AA1',
+               '#EC6068',
+               '#AA4146',
+               '#250F10',
+               '#007575',
+               '#00A6A4',
+               '#64CBCF')
 })
 
 dat <- list()
@@ -72,7 +80,7 @@ dat$mx_input_100 <- dat$mx_input_100[, CI_s_mx(dt = .SD,n_sim = cnst$n_sim),by =
 
 # Diagnostic plots of mx --------------------------------------------------
 
-fig$fig_mx <- ggplot(data = dat$mx_input_100[year %in% c(2010,2015,2019)]) +
+fig$fig_mx <- ggplot(data = dat$mx_input_100[year %in% cnst$years_fig]) +
   ggtitle('mx by year, sex and subgroup')+
   geom_ribbon(
     aes(
@@ -113,85 +121,89 @@ dat$deaths_input_100[, scheme:= as.factor(scheme)]
 dat$deaths_input_100[, deaths_cause_prop:= deaths_cause/deaths]
 
 
+dat$fig_cod_female <- dat$deaths_input_100[sex == 'female' 
+                                           & year == 2020 
+                                           & reth %in% c('nhw','nhb','latinx')]
+
+dat$fig_cod_female <- dat$fig_cod_female[,cause_short := cause]
+dat$fig_cod_female[cause %in% c('drug','alcohol','suicide'),]$cause_short <- 'despair'
+dat$fig_cod_female[cause %in% c('female_cancer','male_cancer','rest_cancers'),]$cause_short <- 'cancers'
+dat$fig_cod_female <- dat$fig_cod_female[, .(deaths_cause = sum(deaths_cause)),
+                                         by = .(age,year,sex,reth,scheme,deaths,pop,cause_short)]
+dat$fig_cod_female[, deaths_cause_prop:= deaths_cause/deaths]
+dat$fig_cod_female[, cause_short:= as.character(cause_short)]
+dat$fig_cod_female[, cause_short:=  factor(cause_short, c('obesity',
+                                                          'despair',
+                                                          'accidents',
+                                                          'cancers',
+                                                          'infectious',
+                                                          'respiratory',
+                                                          'rest'))]
+
+
 fig$fig_COD_prop_females <- 
-ggplot(data = dat$deaths_input_100[sex == 'female' & year == 2019],
+ggplot(data = dat$fig_cod_female,
         aes(
           x = age,
           y = deaths_cause_prop,
-          fill = cause)) +
-  ggtitle('COD structure over time, scheme and subgroup, females')+
+          fill = cause_short)) +
+  ggtitle('COD structure over time, scheme and subgroup, females 2020')+
   geom_area(stat = 'identity', position = 'fill')+
   labs(
     x = 'Age',
     y = 'Proportion'
   ) +
   facet_grid(reth~scheme)+
-   scale_fill_manual(values = c(1,rep(2,10)))
+   scale_fill_manual(values = cnst$cols_fig)
+
+
+fig$fig_COD_prop_females
+
+################################################################################
+
+dat$fig_cod_male <- dat$deaths_input_100[sex == 'male' 
+                                           & year == 2020 
+                                           & reth %in% c('nhw','nhb','latinx')]
+
+dat$fig_cod_male <- dat$fig_cod_male[,cause_short := cause]
+dat$fig_cod_male[cause %in% c('drug','alcohol','suicide'),]$cause_short <- 'despair'
+dat$fig_cod_male[cause %in% c('female_cancer','male_cancer','rest_cancers'),]$cause_short <- 'cancers'
+dat$fig_cod_male <- dat$fig_cod_male[, .(deaths_cause = sum(deaths_cause)),
+                                         by = .(age,year,sex,reth,scheme,deaths,pop,cause_short)]
+dat$fig_cod_male[, deaths_cause_prop:= deaths_cause/deaths]
+dat$fig_cod_male[, cause_short:= as.character(cause_short)]
+dat$fig_cod_male[, cause_short:=  factor(cause_short, c('obesity',
+                                                          'despair',
+                                                          'accidents',
+                                                          'cancers',
+                                                          'infectious',
+                                                          'respiratory',
+                                                          'rest'))]
 
 
 fig$fig_COD_prop_males <- 
-  ggplot(data = dat$deaths_input_100[sex == 'male' & year == 2019],
+  ggplot(data = dat$fig_cod_male,
          aes(
            x = age,
            y = deaths_cause_prop,
-           fill = cause)) +
-  ggtitle('COD structure over time, scheme and subgroup, males')+
+           fill = cause_short)) +
+  ggtitle('COD structure over time, scheme and subgroup, males 2020')+
   geom_area(stat = 'identity', position = 'fill')+
   labs(
     x = 'Age',
     y = 'Proportion'
   ) +
   facet_grid(reth~scheme)+
-  scale_fill_manual(values = c(1,rep(3,10)))
+  scale_fill_manual(values = cnst$cols_fig)
 
 
+fig$fig_COD_prop_males
 
 ggsave(glue('{cnst$path_out}/fig_cod_prop_females.png'),plot = fig$fig_COD_prop_females,width = 10,height = 10)
 
 
 ggsave(glue('{cnst$path_out}/fig_cod_prop_males.png'),plot = fig$fig_COD_prop_males,width = 10,height = 10)
 
-
-
-#### visualize the rest
-
-fig$fig_COD_prop_females <- 
-  ggplot(data = dat$deaths_input_100[sex == 'female' & year == 2019],
-         aes(
-           x = age,
-           y = deaths_cause_prop,
-           fill = cause)) +
-  ggtitle('COD structure over time, scheme and subgroup, females')+
-  geom_area(stat = 'identity', position = 'fill')+
-  labs(
-    x = 'Age',
-    y = 'Proportion'
-  ) +
-  facet_grid(reth~scheme)+
-  scale_fill_manual(values = rev(c(1,rep(2,10))))
-
-
-fig$fig_COD_prop_males <- 
-  ggplot(data = dat$deaths_input_100[sex == 'male' & year == 2019],
-         aes(
-           x = age,
-           y = deaths_cause_prop,
-           fill = cause)) +
-  ggtitle('COD structure over time, scheme and subgroup, males')+
-  geom_area(stat = 'identity', position = 'fill')+
-  labs(
-    x = 'Age',
-    y = 'Proportion'
-  ) +
-  facet_grid(reth~scheme)+
-  scale_fill_manual(values = rev(c(1,rep(3,10))))
-
-
-
-ggsave(glue('{cnst$path_out}/fig_cod_prop_females_rest.png'),plot = fig$fig_COD_prop_females,width = 10,height = 10)
-
-
-ggsave(glue('{cnst$path_out}/fig_cod_prop_males_rest.png'),plot = fig$fig_COD_prop_males,width = 10,height = 10)
 
 
 

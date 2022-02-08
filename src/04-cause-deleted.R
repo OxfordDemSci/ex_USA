@@ -19,6 +19,7 @@ cnst <- within(cnst, {
   path_tmp = glue('{wd}/tmp')
   # number of Poisson life-table replicates
   n_sim = 500
+  years_fig = c(2010,2015,2020)
 })
 
 dat <- list()
@@ -103,10 +104,84 @@ dat$cause_deleted_results <- dat$cod_input_100[, .(e0 = life.expectancy.fun(mx =
                                                                                                   cond_age = 0)), 
                                                       by = .(reth, scheme, sex, year, cause)]
 
+dat$cause_deleted_results[, cause_contribution_months := cause_contribution*12]
 
-# Make a plot -------------------------------------------------------------
 
-fig$fig.cause_deleted_females <- ggplot(data = dat$cause_deleted_results[cause != 'rest' & cause != 'male_cancer' & sex =='female'], aes(year, cause_contribution, col = reth, group = reth))+
+
+# Obesity plot -------------------------------------------------------------
+fig$fig_obesity_contributions <- ggplot(dat$cause_deleted_results[cause %in% 'obesity' &
+                                                                    year %in% cnst$years_fig]) +
+  ggtitle('Contribution of obesity to life expectancy according to different schemes')+
+  geom_point(
+    aes(x = cause_contribution_months, y = reth, color = scheme,group = scheme,shape = scheme),
+    size = 2
+  ) +
+  labs(
+    x = 'Contribution (months)',
+    y = ''
+  ) +
+  facet_grid(year~sex)+
+  scale_colour_manual(values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
+
+fig$fig_obesity_contributions
+
+
+ggsave(glue('{cnst$path_out}/obesity_contribution.png'),plot = fig$fig_obesity_contributions,width = 8,height = 5)
+
+
+
+
+# Age pattern of obesity all
+
+dat$cod_input_100[, cause_specific_mx:= deaths_cause_prop*mx]
+
+fig$fig_obesity_age_patterns_all <- ggplot(dat$cod_input_100[cause %in% 'obesity']) +
+  ggtitle('Age pattern of obesity-related mortality according to different schemes')+
+  geom_point(
+    aes(x = age, y = log(cause_specific_mx), color = scheme,group = scheme),
+    size = 2,alpha = 1/10
+  ) +
+  labs(
+    x = 'Death rate',
+    y = 'Age'
+  ) +
+  facet_grid(sex~reth)+
+  scale_colour_manual(values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
+
+#fig$fig_obesity_age_patterns_all
+
+ggsave(glue('{cnst$path_out}/obesity_age_pattern_all.png'),plot = fig$fig_obesity_age_patterns_all,width = 8,height = 5)
+
+
+# Age pattern of obesity selected years
+
+
+
+fig$fig_obesity_age_patterns <- ggplot(dat$cod_input_100[cause %in% 'obesity' & year %in% 2020]) +
+  ggtitle('Age pattern of obesity-related mortality according to different schemes in 2020')+
+  geom_point(
+    aes(x = age, y = log(cause_specific_mx), color = scheme,group = scheme)) +
+  labs(
+    x = 'Death rate',
+    y = 'Age'
+  ) +
+  geom_line(
+    aes(x = age, y = log(cause_specific_mx), color = scheme,group = scheme),
+    size = .5) +
+  facet_grid(sex~reth)+
+  scale_colour_manual(values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
+
+fig$fig_obesity_age_patterns
+
+ggsave(glue('{cnst$path_out}/obesity_age_pattern.png'),plot = fig$fig_obesity_age_patterns,width = 8,height = 5)
+
+
+
+
+# Make sensitivity checks plot -------------------------------------------------------------
+
+fig$fig.cause_deleted_females <- ggplot(data = dat$cause_deleted_results[cause != 'rest' & cause != 'male_cancer' & sex =='female'], 
+                                        aes(year, cause_contribution, col = reth, group = reth))+
   geom_line()+
   ggtitle('Females, cause contrib to e0')+
   facet_grid(cause~scheme,scales="free_y")

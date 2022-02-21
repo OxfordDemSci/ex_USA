@@ -60,7 +60,9 @@ CI_s_mx <- function(dt = .SD, n_sim = cnst$n_sim){
 dat$deaths_input_100 <- readRDS(glue('{cnst$path_out}/deaths_input_100.rds'))
 
 #create a dataset with total deaths only 
-dat$mx_input_100 <- dat$deaths_input_100[scheme %in% 'masters' & cause %in% 'obesity',.(deaths = deaths, pop = pop), by = .(reth,year,sex,age)]
+dat$mx_input_100 <- dat$deaths_input_100[scheme %in% 'masters' & cause %in% 'obesity',
+                                         .(deaths = deaths, pop = pop), 
+                                         by = .(reth,year,sex,age)]
 
 # Description of mx -------------------------------------------------------
 
@@ -132,6 +134,7 @@ dat$fig_cod_female <- dat$fig_cod_female[, .(deaths_cause = sum(deaths_cause)),
                                          by = .(age,year,sex,reth,scheme,deaths,pop,cause_short)]
 dat$fig_cod_female[, deaths_cause_prop:= deaths_cause/deaths]
 dat$fig_cod_female[, cause_short:= as.character(cause_short)]
+
 dat$fig_cod_female[, cause_short:=  factor(cause_short, c('obesity',
                                                           'despair',
                                                           'accidents',
@@ -141,20 +144,28 @@ dat$fig_cod_female[, cause_short:=  factor(cause_short, c('obesity',
                                                           'rest'))]
 
 
+
+#rename variables for plot
+levels(dat$fig_cod_female$cause_short) <- c('Obesity','Despair','Accidents','Cancers',
+                                            'Infectious','Respiratory','Rest')
+levels(dat$fig_cod_female$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
+levels(dat$fig_cod_female$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
+
+
 fig$fig_COD_prop_females <- 
 ggplot(data = dat$fig_cod_female,
         aes(
           x = age,
           y = deaths_cause_prop,
           fill = cause_short)) +
-  ggtitle('COD structure over time, scheme and subgroup, females 2020')+
+  #ggtitle('COD structure over time, scheme and subgroup, females 2020')+
   geom_area(stat = 'identity', position = 'fill')+
   labs(
     x = 'Age',
     y = 'Proportion'
   ) +
   facet_grid(reth~scheme)+
-   scale_fill_manual(values = cnst$cols_fig)
+   scale_fill_manual('Causes of Death',values = cnst$cols_fig)
 
 
 fig$fig_COD_prop_females
@@ -179,6 +190,12 @@ dat$fig_cod_male[, cause_short:=  factor(cause_short, c('obesity',
                                                           'infectious',
                                                           'respiratory',
                                                           'rest'))]
+
+levels(dat$fig_cod_male$cause_short) <- c('Obesity','Despair','Accidents','Cancers',
+                                            'Infectious','Respiratory','Rest')
+levels(dat$fig_cod_male$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
+levels(dat$fig_cod_male$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
+
 
 
 fig$fig_COD_prop_males <- 
@@ -212,3 +229,27 @@ ggsave(glue('{cnst$path_out}/fig_cod_prop_males.png'),plot = fig$fig_COD_prop_ma
 saveRDS(dat$mx_input_100_to_save,glue('{cnst$path_out}/mx_input_100.rds'))
 
 saveRDS(dat$deaths_input_100,glue('{cnst$path_out}/cod_input_100.rds'))
+
+
+#### Some results in the paper
+
+# Under the UCOD scheme there are very few obesity-related deaths (less than XYZ %), 
+dat$paper_results_1 <- dat$deaths_input_100[ year == 2020 
+                     & reth %in% c('nhw','nhb','latinx'),]
+
+dat$paper_results_1 <- dat$paper_results_1[, .(total_deaths = sum(deaths), deaths_cause = sum(deaths_cause)), 
+                    by = .(year,sex,reth,scheme,cause)]
+
+dat$paper_results_1[, prop_cause := deaths_cause/total_deaths*100]
+
+#check
+dat$paper_results_1[, sum(prop_cause), by =.(year,sex,reth,scheme)]
+
+# results 
+dat$paper_results_1[scheme %in% 'ucod' & cause %in% 'obesity', ]
+
+dat$paper_results_1[scheme %in% 'gbd' & cause %in% 'obesity', ]
+
+
+
+

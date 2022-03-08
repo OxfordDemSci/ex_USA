@@ -204,7 +204,7 @@ fig$fig_COD_prop_males <-
            x = age,
            y = deaths_cause_prop,
            fill = cause_short)) +
-  ggtitle('COD structure over time, scheme and subgroup, males 2020')+
+  #ggtitle('COD structure over time, scheme and subgroup, males 2020')+
   geom_area(stat = 'identity', position = 'fill')+
   labs(
     x = 'Age',
@@ -216,8 +216,11 @@ fig$fig_COD_prop_males <-
 
 fig$fig_COD_prop_males
 
+ggsave(glue('{cnst$path_out}/fig_cod_prop_females.pdf'),plot = fig$fig_COD_prop_females,width = 10,height = 10, device = cairo_pdf)
+
 ggsave(glue('{cnst$path_out}/fig_cod_prop_females.png'),plot = fig$fig_COD_prop_females,width = 10,height = 10)
 
+ggsave(glue('{cnst$path_out}/fig_cod_prop_males.pdf'),plot = fig$fig_COD_prop_males,width = 10,height = 10, device = cairo_pdf)
 
 ggsave(glue('{cnst$path_out}/fig_cod_prop_males.png'),plot = fig$fig_COD_prop_males,width = 10,height = 10)
 

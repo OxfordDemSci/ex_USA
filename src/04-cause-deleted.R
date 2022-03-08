@@ -134,6 +134,7 @@ fig$fig_obesity_contributions <- ggplot(dat$fig_obesity_contributions) +
 
 fig$fig_obesity_contributions
 
+ggsave(glue('{cnst$path_out}/obesity_contribution.pdf'),plot = fig$fig_obesity_contributions,width = 8,height = 5, device = cairo_pdf)
 
 ggsave(glue('{cnst$path_out}/obesity_contribution.png'),plot = fig$fig_obesity_contributions,width = 8,height = 5)
 
@@ -185,6 +186,8 @@ fig$fig_obesity_age_patterns <- ggplot(dat$fig_obesity_age_patterns) +
   scale_colour_manual('Scheme', values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
 
 fig$fig_obesity_age_patterns
+
+ggsave(glue('{cnst$path_out}/obesity_age_pattern.pdf'),plot = fig$fig_obesity_age_patterns,width = 8,height = 5, device = cairo_pdf)
 
 ggsave(glue('{cnst$path_out}/obesity_age_pattern.png'),plot = fig$fig_obesity_age_patterns,width = 8,height = 5)
 

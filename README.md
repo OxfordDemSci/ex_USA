@@ -26,18 +26,6 @@ To run this code, do something like:
 $ git clone https://github.com/OxfordDemSci/ex_USA.git
 ```
 
-and then execute each of the scripts (0 through 10) which will undertake sequential tasks like defining skeletons, to undertaking the PCLM, cleaning outputs for analysis, and data visualisation
-
-
-### Structure
-----------------
-
-* _cfg_ relates to: configuration files
-* _dat_ relates to: input source data
-* _out_ relates to: output data, figures, and sensitivity analysis
-* _src_ relates to: code to replicate the wrangling, analysis and visualisation
-* _tmp_ relates to: a subdir to store temporary files
-* _ass_ relates to: a place to store repo assets
 
 ### Versioning
 ------------

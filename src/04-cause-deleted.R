@@ -19,7 +19,7 @@ cnst <- within(cnst, {
   path_tmp = glue('{wd}/tmp')
   # number of Poisson life-table replicates
   n_sim = 500
-  years_fig = c(2010,2015,2020)
+  years_fig = c(2010,2015,2019)
 })
 
 dat <- list()
@@ -195,7 +195,7 @@ ggsave(glue('{cnst$path_out}/obesity_age_pattern.png'),plot = fig$fig_obesity_ag
 ### restricted from age 25
 # Age pattern of obesity selected years from age 25
 
-dat$fig_obesity_age_patterns_25 <- dat$cod_input_100[cause %in% 'obesity' & year %in% 2020 & age>= 25 ]
+dat$fig_obesity_age_patterns_25 <- dat$cod_input_100[cause %in% 'obesity' & year %in% 2019 & age>= 25 ]
 
 levels(dat$fig_obesity_age_patterns_25$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
 levels(dat$fig_obesity_age_patterns_25$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
@@ -225,7 +225,8 @@ ggsave(glue('{cnst$path_out}/obesity_age_pattern_25.png'),plot = fig$fig_obesity
 
 # Make sensitivity checks plot -------------------------------------------------------------
 
-fig$fig.cause_deleted_females <- ggplot(data = dat$cause_deleted_results[cause != 'rest' & cause != 'male_cancer' & sex =='female'], 
+fig$fig.cause_deleted_females <- ggplot(data = dat$cause_deleted_results[cause != 'rest' & 
+                                                                           cause != 'male_cancer' & sex =='female'], 
                                         aes(year, cause_contribution, col = reth, group = reth))+
   geom_line()+
   ggtitle('Females, cause contrib to e0')+

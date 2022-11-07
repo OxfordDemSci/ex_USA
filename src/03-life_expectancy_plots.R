@@ -18,7 +18,7 @@ cnst <- within(cnst, {
   path_out = glue('{wd}/out')
   path_tmp = glue('{wd}/tmp')
   #years to show in graps
-  years_fig = c(2010,2015,2020)
+  years_fig = c(2010,2015,2019)
   cols_fig = c('#38907B','#E1C7CF','#4A232E')
 })
 
@@ -40,7 +40,7 @@ dat$lt_100 <- data.table(readRDS(glue('{cnst$path_out}/lt_CI.rds')))
 # from 2019 to 2020 by sex and region and compare with average
 # annual change over 2015 to 2019 period
 
-fig$fig_e0 <- ggplot(data = dat$lt_100[x == 0]) +
+fig$fig_e0 <- ggplot(data = dat$lt_100[x == 0 & year <= max(cnst$years_fig)]) +
   ggtitle('e0 by year, sex and subgroup')+
   geom_ribbon(
     aes(
@@ -65,13 +65,14 @@ fig$fig_e0 <- ggplot(data = dat$lt_100[x == 0]) +
   ) +
   facet_grid(.~sex)+
   scale_colour_manual(values= cnst$cols_fig)+
-  scale_fill_manual(values= cnst$cols_fig)
+  scale_fill_manual(values= cnst$cols_fig)+
+  scale_x_continuous(breaks = c(2010,2012,2014,2016,2018,2019)) 
 
 fig$fig_e0
 
 
 
-fig$fig_e60 <- ggplot(data = dat$lt_100[x == 60]) +
+fig$fig_e60 <- ggplot(data = dat$lt_100[x == 60 & year <= max(cnst$years_fig)]) +
   ggtitle('e60 by year, sex and subgroup')+
   geom_ribbon(
     aes(
@@ -96,7 +97,8 @@ fig$fig_e60 <- ggplot(data = dat$lt_100[x == 60]) +
   ) +
   facet_grid(.~sex)+
   scale_colour_manual(values= cnst$cols_fig)+
-  scale_fill_manual(values= cnst$cols_fig)
+  scale_fill_manual(values= cnst$cols_fig)+
+  scale_x_continuous(breaks = c(2010,2012,2014,2016,2018,2019)) 
 
 fig$fig_e60
 

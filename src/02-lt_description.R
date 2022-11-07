@@ -19,7 +19,7 @@ cnst <- within(cnst, {
   path_tmp = glue('{wd}/tmp')
   # number of Poisson life-table replicates
   n_sim = 500
-  years_ind = 2010:2020
+  years_ind = 2010:2019
 })
 
 dat <- list()

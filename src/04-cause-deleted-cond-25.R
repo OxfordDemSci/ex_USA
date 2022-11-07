@@ -19,7 +19,7 @@ cnst <- within(cnst, {
   path_tmp = glue('{wd}/tmp')
   # number of Poisson life-table replicates
   n_sim = 500
-  years_fig = c(2010,2015,2020)
+  years_fig = c(2010,2015,2019)
   condition_age = 25
 })
 

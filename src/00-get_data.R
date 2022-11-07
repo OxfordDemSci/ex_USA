@@ -21,9 +21,8 @@ cnst <- within(cnst, {
   n_sim = 500
   min_age = 15
   var_names = c('age','year','sex','reth','deaths','pop','obesity',
-                'respiratory','infectious','drug',
-                'alcohol','suicide','female_cancer','male_cancer','rest_cancers',
-                'accidents','rest')
+                'suicide','substance','cancers',
+                'respiratory','infectious','accidents','covid','other')
 })
 
 dat <- list()
@@ -40,45 +39,40 @@ tab <- list()
 
 #some checks prior
 
-dat$analytic <- data.table(read_dta(glue('{wd}/dat/analytic.dta')))
+dat$analytic <- data.table(read_dta(glue('{wd}/dat/analytic_obesity.dta')))
 
 #view(dat$analytic)
 
 dat$masters <- dat$analytic[,c('age','year','male','reth','mort','pop','m1',
-                               'm2','m3','drug','alch','sui','fgs_cancers',
-                               'mgs_cancers','mostcancers','m6','m7')]
+                               'm2','m3','m4','m5','m6','m7','m8','m9')]
 
 names(dat$masters) <- cnst$var_names
 
 dat$masters$scheme <- 'masters'
 
 dat$acosta <- dat$analytic[,c('age','year','male','reth','mort','pop','ac1',
-                               'ac2','ac3','drug','alch','sui','fgs_cancers_acosta',
-                               'mgs_cancers_acosta','mostcancers_acosta','ac6','ac7')]
+                               'ac2','ac3','ac4','ac5','ac6','ac7','ac8','ac9')]
 
 names(dat$acosta) <- cnst$var_names
 
 dat$acosta$scheme <- 'acosta'
 
 dat$adair <- dat$analytic[,c('age','year','male','reth','mort','pop','ad1',
-                               'ad2','ad3','drug','alch','sui','fgs_cancers',
-                               'mgs_cancers','mostcancers','ad6','ad7')]
+                               'ad2','ad3','ad4','ad5','ad6','ad7','ad8','ad9')]
 
 names(dat$adair) <- cnst$var_names
 
 dat$adair$scheme <- 'adair'
 
-dat$gbd <- dat$analytic[,c('age','year','male','reth','mort','pop','gbd1',
-                             'gbd2','gbd3','drug','alch','sui','fgs_cancers_gbd',
-                             'mgs_cancers_gbd','mostcancers_gbd','gbd6','gbd7')]
+dat$gbd <- dat$analytic[,c('age','year','male','reth','mort','pop','cc1',
+                           'cc2','cc3','cc4','cc5','cc6','cc7','cc8','cc9')]
 
 names(dat$gbd) <- cnst$var_names
 
 dat$gbd$scheme <- 'gbd'
 
 dat$ucod <- dat$analytic[,c('age','year','male','reth','mort','pop','o1',
-                           'o2','o3','drug','alch','sui','fgs_cancers',
-                           'mgs_cancers','mostcancers','o6','o7')]
+                           'o2','o3','o4','o5','o6','o7','o8','o9')]
 
 names(dat$ucod) <- cnst$var_names
 

@@ -21,14 +21,16 @@ cnst <- within(cnst, {
   # number of Poisson life-table replicates
   n_sim = 500
   #years to show in graps
-  years_fig = c(2010,2015,2020)
+  years_fig = c(2010,2015,2019)
   cols_fig = c('#FF9AA1',
                '#EC6068',
                '#AA4146',
                '#250F10',
                '#007575',
                '#00A6A4',
-               '#64CBCF')
+               '#64CBCF',
+               #'blue',
+               'lightgrey')
 })
 
 dat <- list()
@@ -124,40 +126,40 @@ dat$deaths_input_100[, deaths_cause_prop:= deaths_cause/deaths]
 
 
 dat$fig_cod_female <- dat$deaths_input_100[sex == 'female' 
-                                           & year == 2020 
+                                           & year == 2019 
                                            & reth %in% c('nhw','nhb','latinx')]
 
-dat$fig_cod_female <- dat$fig_cod_female[,cause_short := cause]
-dat$fig_cod_female[cause %in% c('drug','alcohol','suicide'),]$cause_short <- 'despair'
-dat$fig_cod_female[cause %in% c('female_cancer','male_cancer','rest_cancers'),]$cause_short <- 'cancers'
-dat$fig_cod_female <- dat$fig_cod_female[, .(deaths_cause = sum(deaths_cause)),
-                                         by = .(age,year,sex,reth,scheme,deaths,pop,cause_short)]
-dat$fig_cod_female[, deaths_cause_prop:= deaths_cause/deaths]
-dat$fig_cod_female[, cause_short:= as.character(cause_short)]
-
-dat$fig_cod_female[, cause_short:=  factor(cause_short, c('obesity',
-                                                          'despair',
-                                                          'accidents',
-                                                          'cancers',
-                                                          'infectious',
-                                                          'respiratory',
-                                                          'rest'))]
+# dat$fig_cod_female <- dat$fig_cod_female[,cause_short := cause]
+# dat$fig_cod_female[cause %in% c('drug','alcohol','suicide'),]$cause_short <- 'despair'
+# dat$fig_cod_female[cause %in% c('female_cancer','male_cancer','rest_cancers'),]$cause_short <- 'cancers'
+# dat$fig_cod_female <- dat$fig_cod_female[, .(deaths_cause = sum(deaths_cause)),
+#                                          by = .(age,year,sex,reth,scheme,deaths,pop,cause_short)]
+# dat$fig_cod_female[, deaths_cause_prop:= deaths_cause/deaths]
+# dat$fig_cod_female[, cause_short:= as.character(cause_short)]
+# 
+# dat$fig_cod_female[, cause_short:=  factor(cause_short, c('obesity',
+#                                                           'despair',
+#                                                           'accidents',
+#                                                           'cancers',
+#                                                           'infectious',
+#                                                           'respiratory',
+#                                                           'rest'))]
 
 
 
 #rename variables for plot
-levels(dat$fig_cod_female$cause_short) <- c('Obesity','Despair','Accidents','Cancers',
-                                            'Infectious','Respiratory','Rest')
+# levels(dat$fig_cod_female$cause_short) <- c('Obesity','Despair','Accidents','Cancers',
+#                                             'Infectious','Respiratory','Rest')
 levels(dat$fig_cod_female$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
 levels(dat$fig_cod_female$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
 
 
 fig$fig_COD_prop_females <- 
-ggplot(data = dat$fig_cod_female,
+ggplot(data = dat$fig_cod_female[cause!='covid'],
         aes(
           x = age,
           y = deaths_cause_prop,
-          fill = cause_short)) +
+          fill = cause)) +
   #ggtitle('COD structure over time, scheme and subgroup, females 2020')+
   geom_area(stat = 'identity', position = 'fill')+
   labs(
@@ -173,37 +175,37 @@ fig$fig_COD_prop_females
 ################################################################################
 
 dat$fig_cod_male <- dat$deaths_input_100[sex == 'male' 
-                                           & year == 2020 
+                                           & year == 2019 
                                            & reth %in% c('nhw','nhb','latinx')]
 
-dat$fig_cod_male <- dat$fig_cod_male[,cause_short := cause]
-dat$fig_cod_male[cause %in% c('drug','alcohol','suicide'),]$cause_short <- 'despair'
-dat$fig_cod_male[cause %in% c('female_cancer','male_cancer','rest_cancers'),]$cause_short <- 'cancers'
-dat$fig_cod_male <- dat$fig_cod_male[, .(deaths_cause = sum(deaths_cause)),
-                                         by = .(age,year,sex,reth,scheme,deaths,pop,cause_short)]
-dat$fig_cod_male[, deaths_cause_prop:= deaths_cause/deaths]
-dat$fig_cod_male[, cause_short:= as.character(cause_short)]
-dat$fig_cod_male[, cause_short:=  factor(cause_short, c('obesity',
-                                                          'despair',
-                                                          'accidents',
-                                                          'cancers',
-                                                          'infectious',
-                                                          'respiratory',
-                                                          'rest'))]
+# dat$fig_cod_male <- dat$fig_cod_male[,cause_short := cause]
+# dat$fig_cod_male[cause %in% c('drug','alcohol','suicide'),]$cause_short <- 'despair'
+# dat$fig_cod_male[cause %in% c('female_cancer','male_cancer','rest_cancers'),]$cause_short <- 'cancers'
+# dat$fig_cod_male <- dat$fig_cod_male[, .(deaths_cause = sum(deaths_cause)),
+#                                          by = .(age,year,sex,reth,scheme,deaths,pop,cause_short)]
+# dat$fig_cod_male[, deaths_cause_prop:= deaths_cause/deaths]
+# dat$fig_cod_male[, cause_short:= as.character(cause_short)]
+# dat$fig_cod_male[, cause_short:=  factor(cause_short, c('obesity',
+#                                                           'despair',
+#                                                           'accidents',
+#                                                           'cancers',
+#                                                           'infectious',
+#                                                           'respiratory',
+#                                                           'rest'))]
 
-levels(dat$fig_cod_male$cause_short) <- c('Obesity','Despair','Accidents','Cancers',
-                                            'Infectious','Respiratory','Rest')
+# levels(dat$fig_cod_male$cause_short) <- c('Obesity','Despair','Accidents','Cancers',
+#                                             'Infectious','Respiratory','Rest')
 levels(dat$fig_cod_male$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
 levels(dat$fig_cod_male$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
 
 
 
 fig$fig_COD_prop_males <- 
-  ggplot(data = dat$fig_cod_male,
+  ggplot(data = dat$fig_cod_male[cause!='covid'],
          aes(
            x = age,
            y = deaths_cause_prop,
-           fill = cause_short)) +
+           fill = cause)) +
   #ggtitle('COD structure over time, scheme and subgroup, males 2020')+
   geom_area(stat = 'identity', position = 'fill')+
   labs(
@@ -237,7 +239,7 @@ saveRDS(dat$deaths_input_100,glue('{cnst$path_out}/cod_input_100.rds'))
 #### Some results in the paper
 
 # Under the UCOD scheme there are very few obesity-related deaths (less than XYZ %), 
-dat$paper_results_1 <- dat$deaths_input_100[ year == 2020 
+dat$paper_results_1 <- dat$deaths_input_100[ year == 2019 
                      & reth %in% c('nhw','nhb','latinx'),]
 
 dat$paper_results_1 <- dat$paper_results_1[, .(total_deaths = sum(deaths), deaths_cause = sum(deaths_cause)), 

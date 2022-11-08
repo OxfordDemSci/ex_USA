@@ -94,7 +94,7 @@ cause.deleted.life.expectancy.fun  <-
 
 # calculate life expectancy and cause deleted life expectancy ------------------------------------------
 
-dat$cod_input_100[cause == 'rest']
+dat$cod_input_100[cause == 'Other']
 unique(dat$cod_input_100$cause)
 
 dat$cause_deleted_results <- dat$cod_input_100[, .(ex = life.expectancy.fun(mx = mx,x = age,nx = nx,cond_age = cnst$condition_age),
@@ -111,11 +111,10 @@ dat$cause_deleted_results[, cause_contribution_months := cause_contribution*12]
 
 # Obesity plot -------------------------------------------------------------
 
-dat$fig_obesity_contributions <- dat$cause_deleted_results[cause %in% 'obesity' &
+dat$fig_obesity_contributions <- dat$cause_deleted_results[cause %in% 'Obesity' &
                                                              year %in% cnst$years_fig]
 
 levels(dat$fig_obesity_contributions$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
-levels(dat$fig_obesity_contributions$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
 levels(dat$fig_obesity_contributions$sex) <- c('Female','Male')
 dat$fig_obesity_contributions$Scheme <- dat$fig_obesity_contributions$scheme
   
@@ -124,14 +123,15 @@ fig$fig_obesity_contributions <- ggplot(dat$fig_obesity_contributions) +
   #ggtitle('Contribution of obesity to life expectancy according to different schemes')+
   geom_point(
     aes(x = cause_contribution_months, y = reth, color = Scheme,group = Scheme,shape = Scheme),
-    size = 2,
+    size = 4,
   ) +
   labs(
     x = 'Contribution (months)',
     y = ''
   ) +
   facet_grid(year~sex)+
-  scale_colour_manual( values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
+  scale_colour_manual( values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))+
+  theme_bw()
 
 fig$fig_obesity_contributions
 

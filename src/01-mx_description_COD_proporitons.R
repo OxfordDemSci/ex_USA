@@ -62,7 +62,7 @@ CI_s_mx <- function(dt = .SD, n_sim = cnst$n_sim){
 dat$deaths_input_100 <- readRDS(glue('{cnst$path_out}/deaths_input_100.rds'))
 
 #create a dataset with total deaths only 
-dat$mx_input_100 <- dat$deaths_input_100[scheme %in% 'masters' & cause %in% 'obesity',
+dat$mx_input_100 <- dat$deaths_input_100[scheme %in% 'Masters' & cause %in% 'Obesity',
                                          .(deaths = deaths, pop = pop), 
                                          by = .(reth,year,sex,age)]
 
@@ -107,7 +107,8 @@ fig$fig_mx <- ggplot(data = dat$mx_input_100[year %in% cnst$years_fig]) +
     x = 'Age',
     y = 'mx'
   ) +
-  facet_grid(reth~year)
+  facet_grid(reth~year)+
+  theme_bw()
 
 fig$fig_mx
   
@@ -151,11 +152,11 @@ dat$fig_cod_female <- dat$deaths_input_100[sex == 'female'
 # levels(dat$fig_cod_female$cause_short) <- c('Obesity','Despair','Accidents','Cancers',
 #                                             'Infectious','Respiratory','Rest')
 levels(dat$fig_cod_female$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
-levels(dat$fig_cod_female$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
+
 
 
 fig$fig_COD_prop_females <- 
-ggplot(data = dat$fig_cod_female[cause!='covid'],
+ggplot(data = dat$fig_cod_female[cause!='Covid'],
         aes(
           x = age,
           y = deaths_cause_prop,
@@ -167,7 +168,8 @@ ggplot(data = dat$fig_cod_female[cause!='covid'],
     y = 'Proportion'
   ) +
   facet_grid(reth~scheme)+
-   scale_fill_manual('Causes of Death',values = cnst$cols_fig)
+   scale_fill_manual('Cause of Death',values = cnst$cols_fig)+
+  theme_bw()
 
 
 fig$fig_COD_prop_females
@@ -196,12 +198,12 @@ dat$fig_cod_male <- dat$deaths_input_100[sex == 'male'
 # levels(dat$fig_cod_male$cause_short) <- c('Obesity','Despair','Accidents','Cancers',
 #                                             'Infectious','Respiratory','Rest')
 levels(dat$fig_cod_male$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
-levels(dat$fig_cod_male$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
+
 
 
 
 fig$fig_COD_prop_males <- 
-  ggplot(data = dat$fig_cod_male[cause!='covid'],
+  ggplot(data = dat$fig_cod_male[cause!='Covid'],
          aes(
            x = age,
            y = deaths_cause_prop,
@@ -213,7 +215,8 @@ fig$fig_COD_prop_males <-
     y = 'Proportion'
   ) +
   facet_grid(reth~scheme)+
-  scale_fill_manual(values = cnst$cols_fig)
+  scale_fill_manual('Cause of Death',values = cnst$cols_fig)+
+  theme_bw()
 
 
 fig$fig_COD_prop_males
@@ -251,9 +254,9 @@ dat$paper_results_1[, prop_cause := deaths_cause/total_deaths*100]
 dat$paper_results_1[, sum(prop_cause), by =.(year,sex,reth,scheme)]
 
 # results 
-dat$paper_results_1[scheme %in% 'ucod' & cause %in% 'obesity', ]
+dat$paper_results_1[scheme %in% 'Underlying' & cause %in% 'Obesity', ]
 
-dat$paper_results_1[scheme %in% 'gbd' & cause %in% 'obesity', ]
+dat$paper_results_1[scheme %in% 'Contributing' & cause %in% 'Obesity', ]
 
 
 

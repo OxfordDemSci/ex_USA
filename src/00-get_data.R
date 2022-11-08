@@ -20,9 +20,9 @@ cnst <- within(cnst, {
   # number of Poisson life-table replicates
   n_sim = 500
   min_age = 15
-  var_names = c('age','year','sex','reth','deaths','pop','obesity',
-                'suicide','substance','cancers',
-                'respiratory','infectious','accidents','covid','other')
+  var_names = c('age','year','sex','reth','deaths','pop','Obesity',
+                'Suicide','Substance','Cancers',
+                'Respiratory','Infectious','Accidents','Covid','Other')
 })
 
 dat <- list()
@@ -48,35 +48,35 @@ dat$masters <- dat$analytic[,c('age','year','male','reth','mort','pop','m1',
 
 names(dat$masters) <- cnst$var_names
 
-dat$masters$scheme <- 'masters'
+dat$masters$scheme <- 'Masters'
 
 dat$acosta <- dat$analytic[,c('age','year','male','reth','mort','pop','ac1',
                                'ac2','ac3','ac4','ac5','ac6','ac7','ac8','ac9')]
 
 names(dat$acosta) <- cnst$var_names
 
-dat$acosta$scheme <- 'acosta'
+dat$acosta$scheme <- 'Acosta'
 
 dat$adair <- dat$analytic[,c('age','year','male','reth','mort','pop','ad1',
                                'ad2','ad3','ad4','ad5','ad6','ad7','ad8','ad9')]
 
 names(dat$adair) <- cnst$var_names
 
-dat$adair$scheme <- 'adair'
+dat$adair$scheme <- 'Adair'
 
 dat$gbd <- dat$analytic[,c('age','year','male','reth','mort','pop','cc1',
                            'cc2','cc3','cc4','cc5','cc6','cc7','cc8','cc9')]
 
 names(dat$gbd) <- cnst$var_names
 
-dat$gbd$scheme <- 'gbd'
+dat$gbd$scheme <- 'Contributing'
 
 dat$ucod <- dat$analytic[,c('age','year','male','reth','mort','pop','o1',
                            'o2','o3','o4','o5','o6','o7','o8','o9')]
 
 names(dat$ucod) <- cnst$var_names
 
-dat$ucod$scheme <- 'ucod'
+dat$ucod$scheme <- 'Underlying'
 
 ## bind them to have only one dataset
 
@@ -93,6 +93,9 @@ dat$analytic_bind[deaths > pop]
 dat$deaths_input_100 <- melt.data.table(data = dat$analytic_bind,
                                           id.vars = c('age','year','sex','reth','scheme','deaths','pop'),
                                           variable.name = 'cause',value.name = 'deaths_cause')
+
+dat$deaths_input_100$scheme <- factor(dat$deaths_input_100$scheme, levels =  c("Acosta", "Adair", 
+                                                                               "Masters", "Contributing", "Underlying"))
 
 #check for NA's
 

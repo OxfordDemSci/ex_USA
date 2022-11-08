@@ -66,7 +66,8 @@ fig$fig_e0 <- ggplot(data = dat$lt_100[x == 0 & year <= max(cnst$years_fig)]) +
   facet_grid(.~sex)+
   scale_colour_manual(values= cnst$cols_fig)+
   scale_fill_manual(values= cnst$cols_fig)+
-  scale_x_continuous(breaks = c(2010,2012,2014,2016,2018,2019)) 
+  scale_x_continuous(breaks = c(2010,2012,2014,2016,2018,2019)) +
+  theme_bw()
 
 fig$fig_e0
 
@@ -98,7 +99,8 @@ fig$fig_e60 <- ggplot(data = dat$lt_100[x == 60 & year <= max(cnst$years_fig)]) 
   facet_grid(.~sex)+
   scale_colour_manual(values= cnst$cols_fig)+
   scale_fill_manual(values= cnst$cols_fig)+
-  scale_x_continuous(breaks = c(2010,2012,2014,2016,2018,2019)) 
+  scale_x_continuous(breaks = c(2010,2012,2014,2016,2018,2019)) +
+  theme_bw()
 
 fig$fig_e60
 
@@ -119,7 +121,8 @@ fig$fig_ex_ed <- ggplot(data = dat$lt_100[x == 0]) +
   labs(
     x = 'Life expectanacy',
     y = 'Lifespan inequality'
-  )
+  )+
+  theme_bw()
   
 fig$fig_ex_ed
 

@@ -93,7 +93,7 @@ cause.deleted.life.expectancy.fun  <-
 
 # calculate life expectancy and cause deleted life expectancy ------------------------------------------
 
-dat$cod_input_100[cause == 'rest']
+dat$cod_input_100[cause == 'Other']
 unique(dat$cod_input_100$cause)
 
 dat$cause_deleted_results <- dat$cod_input_100[, .(e0 = life.expectancy.fun(mx = mx,x = age,nx = nx,cond_age = 0),
@@ -110,11 +110,10 @@ dat$cause_deleted_results[, cause_contribution_months := cause_contribution*12]
 
 # Obesity plot -------------------------------------------------------------
 
-dat$fig_obesity_contributions <- dat$cause_deleted_results[cause %in% 'obesity' &
+dat$fig_obesity_contributions <- dat$cause_deleted_results[cause %in% 'Obesity' &
                                                              year %in% cnst$years_fig]
 
 levels(dat$fig_obesity_contributions$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
-levels(dat$fig_obesity_contributions$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
 levels(dat$fig_obesity_contributions$sex) <- c('Female','Male')
 
 dat$fig_obesity_contributions$Scheme <-   dat$fig_obesity_contributions$scheme
@@ -123,14 +122,15 @@ fig$fig_obesity_contributions <- ggplot(dat$fig_obesity_contributions) +
   #ggtitle('Contribution of obesity to life expectancy according to different schemes')+
   geom_point(
     aes(x = cause_contribution_months, y = reth, color = Scheme,group = Scheme,shape = Scheme),
-    size = 2
+    size = 4
   ) +
   labs(
     x = 'Contribution (months)',
     y = ''
   ) +
   facet_grid(year~sex)+
-  scale_colour_manual(values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
+  scale_colour_manual(values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))+
+  theme_bw()
 
 fig$fig_obesity_contributions
 
@@ -145,7 +145,7 @@ ggsave(glue('{cnst$path_out}/obesity_contribution.png'),plot = fig$fig_obesity_c
 
 dat$cod_input_100[, cause_specific_mx:= deaths_cause_prop*mx]
 
-fig$fig_obesity_age_patterns_all <- ggplot(dat$cod_input_100[cause %in% 'obesity']) +
+fig$fig_obesity_age_patterns_all <- ggplot(dat$cod_input_100[cause %in% 'Obesity']) +
   #ggtitle('Age pattern of obesity-related mortality according to different schemes')+
   geom_point(
     aes(x = age, y = log(cause_specific_mx), color = scheme,group = scheme),
@@ -156,7 +156,8 @@ fig$fig_obesity_age_patterns_all <- ggplot(dat$cod_input_100[cause %in% 'obesity
     y = 'Age'
   ) +
   facet_grid(sex~reth)+
-  scale_colour_manual(values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
+  scale_colour_manual(values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))+
+  theme_bw()
 
 #fig$fig_obesity_age_patterns_all
 
@@ -165,10 +166,9 @@ ggsave(glue('{cnst$path_out}/obesity_age_pattern_all.png'),plot = fig$fig_obesit
 
 # Age pattern of obesity selected years
 
-dat$fig_obesity_age_patterns <- dat$cod_input_100[cause %in% 'obesity' & year %in% 2020]
+dat$fig_obesity_age_patterns <- dat$cod_input_100[cause %in% 'Obesity' & year %in% 2020]
 
 levels(dat$fig_obesity_age_patterns$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
-levels(dat$fig_obesity_age_patterns$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
 levels(dat$fig_obesity_age_patterns$sex) <- c('Female','Male')
 
 fig$fig_obesity_age_patterns <- ggplot(dat$fig_obesity_age_patterns) +
@@ -183,7 +183,8 @@ fig$fig_obesity_age_patterns <- ggplot(dat$fig_obesity_age_patterns) +
     aes(x = age, y = log(cause_specific_mx), color = scheme,group = scheme),
     size = 1.5) +
   facet_grid(sex~reth)+
-  scale_colour_manual('Scheme', values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
+  scale_colour_manual('Scheme', values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))+
+  theme_bw()
 
 fig$fig_obesity_age_patterns
 
@@ -195,10 +196,9 @@ ggsave(glue('{cnst$path_out}/obesity_age_pattern.png'),plot = fig$fig_obesity_ag
 ### restricted from age 25
 # Age pattern of obesity selected years from age 25
 
-dat$fig_obesity_age_patterns_25 <- dat$cod_input_100[cause %in% 'obesity' & year %in% 2019 & age>= 25 ]
+dat$fig_obesity_age_patterns_25 <- dat$cod_input_100[cause %in% 'Obesity' & year %in% 2019 & age>= 25 ]
 
 levels(dat$fig_obesity_age_patterns_25$reth) <- c('White', 'Black', 'Latino', 'Asian', 'Other')
-levels(dat$fig_obesity_age_patterns_25$scheme) <- c('Acosta','Adair','GBD','Masters','Ucod')
 levels(dat$fig_obesity_age_patterns_25$sex) <- c('Female','Male')
 
 fig$fig_obesity_age_patterns_25 <- ggplot(dat$fig_obesity_age_patterns_25) +
@@ -213,7 +213,8 @@ fig$fig_obesity_age_patterns_25 <- ggplot(dat$fig_obesity_age_patterns_25) +
     aes(x = age, y = log(cause_specific_mx), color = scheme,group = scheme),
     size = 1.5) +
   facet_grid(sex~reth)+
-  scale_colour_manual('Scheme', values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))
+  scale_colour_manual('Scheme', values = c('#DAEDC2','#7ED5B8','#2BABC2','#6C6AB5','#80146E'))+
+  theme_bw()
 
 fig$fig_obesity_age_patterns_25
 
@@ -225,8 +226,8 @@ ggsave(glue('{cnst$path_out}/obesity_age_pattern_25.png'),plot = fig$fig_obesity
 
 # Make sensitivity checks plot -------------------------------------------------------------
 
-fig$fig.cause_deleted_females <- ggplot(data = dat$cause_deleted_results[cause != 'rest' & 
-                                                                           cause != 'male_cancer' & sex =='female'], 
+fig$fig.cause_deleted_females <- ggplot(data = dat$cause_deleted_results[cause != 'Other' & 
+                                                                           sex =='female'], 
                                         aes(year, cause_contribution, col = reth, group = reth))+
   geom_line()+
   ggtitle('Females, cause contrib to e0')+
@@ -236,7 +237,7 @@ fig$fig.cause_deleted_females
 
 
 
-fig$fig.cause_deleted_males <- ggplot(data = dat$cause_deleted_results[cause != 'rest'& cause != 'female_cancer' & sex =='male'], aes(year, cause_contribution, col = reth, group = reth))+
+fig$fig.cause_deleted_males <- ggplot(data = dat$cause_deleted_results[cause != 'Other' & sex =='male'], aes(year, cause_contribution, col = reth, group = reth))+
   geom_line()+
   ggtitle('Males, cause contrib to e0')+
   facet_grid(cause~scheme,scales="free_y")

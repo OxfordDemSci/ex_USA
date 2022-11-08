@@ -22,14 +22,13 @@ cnst <- within(cnst, {
   n_sim = 500
   #years to show in graps
   years_fig = c(2010,2015,2019)
-  cols_fig = c('#FF9AA1',
-               '#EC6068',
-               '#AA4146',
-               '#250F10',
-               '#007575',
-               '#00A6A4',
-               '#64CBCF',
-               #'blue',
+  cols_fig = c('#80146E',
+                '#7A55AB',
+                '#478EC1',
+                '#34B8C0',
+                '#7ED5B8',
+                '#C6E8BC',
+                '#F5F2D8',
                'lightgrey')
 })
 
@@ -37,7 +36,21 @@ dat <- list()
 fig <- list()
 tab <- list()
 
+#80146E
+#7A55AB
+#478EC1
+#34B8C0
+#7ED5B8
+#C6E8BC
+#F5F2D8
 
+# '#FF9AA1',
+# '#EC6068',
+# '#AA4146',
+# '#250F10',
+# '#007575',
+# '#00A6A4',
+# '#64CBCF',
 
 # functions ----------------------------------------------------------------
 
